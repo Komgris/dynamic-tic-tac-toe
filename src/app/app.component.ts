@@ -12,14 +12,11 @@ export class AppComponent implements OnInit {
   header:any = [];
   x= true;
   o = false;
-  sizenumber = 3;
+  sizenumber = 5;
 
   ngOnInit() {
-    this.table = this.createTable(3);
-    this.header = Object.keys(this.createTable(3));
-    //console.log(header);
-    // board[1][0] = true;
-    // console.log(board);
+    this.table = this.createTable(this.sizenumber);
+    this.header = Object.keys(this.createTable(this.sizenumber));
   }
   createTable(number:number){
     let col=[]
@@ -27,7 +24,7 @@ export class AppComponent implements OnInit {
       let row=[];
       for(let j =0; j<number;j++){
         let obj:any={}
-        obj[j] = null;
+        obj[j] = 0;
         row.push(obj);
       }
       col.push(row);
@@ -39,8 +36,63 @@ export class AppComponent implements OnInit {
     return obj[key];
   }
 
-  playerTurn(row:number,col:number){
+  turn(row:number,col:number){
     this.table[row][+col][+col]=true;
+    if(this.winpattern(true)){
+      console.log('win!!')
+    }
+  }
+
+  winpattern(side:boolean){
+    let isWin=false;
+    let isWinArray:any =[];
+
+    //horizontal
+    this.header.map((x: string | number)=>{
+      this.header.map((y: string | number)=>{
+        isWinArray.push( this.table[x][y][y]);
+      })
+      
+      if((isWinArray.filter((res: boolean)=>res==!side)).length === 0){
+        isWin = true;
+      }
+      isWinArray = [];
+    })
+
+    //vertical
+    this.header.map((x: string | number)=>{
+      this.header.map((y: string | number)=>{
+        isWinArray.push( this.table[y][x][x]);
+      })
+      
+      if((isWinArray.filter((res: boolean)=>res==!side)).length === 0){
+        isWin = true;
+      }
+      isWinArray = [];
+    })
+    
+
+    //diagonal 
+      for(let x = 0; x<this.sizenumber;x++){
+        isWinArray.push(this.table[x][x][x]);
+      }
+      if((isWinArray.filter((res: boolean)=>res==!side)).length === 0){
+        isWin = true;
+      }
+      isWinArray = [];
+
+    //diagonal 
+      let y = this.sizenumber-1;
+      for(let x = 0; x<this.sizenumber;x++){     
+        isWinArray.push(this.table[y-x][x][x]);
+      }
+      if((isWinArray.filter((res: boolean)=>res==!side)).length === 0){
+        isWin = true;
+      }
+      isWinArray = [];
+    
+
+    return isWin;
   }
 
 

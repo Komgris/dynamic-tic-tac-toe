@@ -2,7 +2,7 @@
   <table class="table table-bordered">
     <tbody>
       <tr *ngFor="let row of table let i = index"> 
-          <td (click)="playerTurn(i,col)" *ngFor="let col of header">{{definValue(row[col],col)}}</td>  
+          <td (click)="turn(i,col)" *ngFor="let col of header">{{definValue(row[col],col)}}</td>  
       </tr>
   </tbody>
   </table>

@@ -12,7 +12,7 @@ export class AppComponent implements OnInit {
   header:any = [];
   x= true;
   o = false;
-  sizenumber = 3;
+  sizenumber = 4;
   human = true;
   computer = false;
 
@@ -24,6 +24,56 @@ export class AppComponent implements OnInit {
     this.table = this.createTable(number);
     this.header = Object.keys(this.createTable(number));
   }
+
+  minimax(table:any[],side:boolean){
+    let emptySpace = this.emptySpace(table)
+    if(this.winpattern(table,this.human)) return {score: -10};
+    else if(this.winpattern(table,this.computer)) return {score: 10};
+    else if(emptySpace.length === 0) return {score: 0};
+
+    let moves =[];
+
+    for(let i =0; i<emptySpace.length;i++){
+      let move:any={};
+      //for(let j =0; j<this.sizenumber;j++){
+        move.indexI = emptySpace[i].indexI;
+        move.indexJ = emptySpace[i].indexJ;
+        table[move.indexI][move.indexJ][move.indexJ] = side;
+
+        if(side === this.human){
+          let result:any = this.minimax(table,this.computer);
+          move.score = result.score;
+        }
+        else{
+          let result:any = this.minimax(table,this.human);
+          move.score = result.score;
+        }
+
+        table[move.indexI][move.indexJ][move.indexJ] = 0;
+        moves.push(move);
+    }
+    let bestMove:any
+    if(side===this.computer){
+      let bestScore = -Infinity;
+      for(let i=0;i<moves.length;i++){
+          if(moves[i].score > bestScore){
+            bestScore = moves[i].score;
+            bestMove = i;
+           
+      }
+    }
+  }
+    else{    
+      let bestScore = +Infinity;
+      for(let i=0;i<moves.length;i++){
+            bestScore = moves[i].score;
+            bestMove = i;
+      }
+    }
+    console.log(moves[bestMove])
+    return moves[bestMove];
+  }
+
   createTable(number:number){
     let col=[]
     for(let i =0; i<number;i++){
@@ -42,37 +92,29 @@ export class AppComponent implements OnInit {
     return obj[key];
   }
 
-  turn(row:number,col:number){
-    this.table[row][+col][+col]=true;
-
-    if(this.winpattern(this.table,true)){
-      console.log('win!!')
-    }
-    console.log(this.emptySpace());
+   turn(row:number,col:number){
+    this.table[row][+col][+col]=this.human;
+    this.minimax(this.table,this.computer);
+    //console.log(this.winpattern(this.table,this.computer))
+    //let table = this.table
+    //let computerTurn =  this.minimax(table,this.computer);
+    //this.table[computerTurn.indexI][computerTurn.indexJ][computerTurn.indexJ] = this.computer
   }
 
-  emptySpace(){
-
-  }
-
-  demoMove(side:boolean){
-    let col=[];
-    let point = 0;
-    let demotable = this.table;
+  emptySpace(table:any){
+    let emptyArray:any= [];
     for(let i =0; i<this.sizenumber;i++){
-      let row:any=[];
+      let emptyObj:any={};
       for(let j =0; j<this.sizenumber;j++){
-        if(demotable[i][j][j] === 0){
-          demotable[i][j][j] === side
-          if(this.winpattern(demotable,this.computer)){
-            point++; 
-          }
+        if(table[i][j][j]===0){
+          emptyObj.indexI = i
+          emptyObj.indexJ = j
+          emptyArray.push(emptyObj);
         }
+        emptyObj={};
       }
-      col.push(row);
     }
-    return col;
-
+    return emptyArray;
   }
 
   winpattern(table:any,side:boolean){
@@ -85,7 +127,7 @@ export class AppComponent implements OnInit {
         isWinArray.push( table[x][y][y]);
       })
       
-      if((isWinArray.filter((res: boolean)=>res==!side)).length === 0){
+      if((isWinArray.filter((res: boolean)=>res!==side)).length === 0){
         isWin = true;
       }
       isWinArray = [];
@@ -97,7 +139,7 @@ export class AppComponent implements OnInit {
         isWinArray.push( table[y][x][x]);
       })
       
-      if((isWinArray.filter((res: boolean)=>res==!side)).length === 0){
+      if((isWinArray.filter((res: boolean)=>res!==side)).length === 0){
         isWin = true;
       }
       isWinArray = [];
@@ -108,7 +150,7 @@ export class AppComponent implements OnInit {
       for(let x = 0; x<this.sizenumber;x++){
         isWinArray.push(table[x][x][x]);
       }
-      if((isWinArray.filter((res: boolean)=>res==!side)).length === 0){
+      if((isWinArray.filter((res: boolean)=>res!==side)).length === 0){
         isWin = true;
       }
       isWinArray = [];
@@ -118,7 +160,7 @@ export class AppComponent implements OnInit {
       for(let x = 0; x<this.sizenumber;x++){     
         isWinArray.push(table[y-x][x][x]);
       }
-      if((isWinArray.filter((res: boolean)=>res==!side)).length === 0){
+      if((isWinArray.filter((res: boolean)=>res!==side)).length === 0){
         isWin = true;
       }
       isWinArray = [];

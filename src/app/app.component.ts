@@ -97,8 +97,8 @@ export class AppComponent implements OnInit {
     this.minimax(this.table,this.computer);
     //console.log(this.winpattern(this.table,this.computer))
     //let table = this.table
-    //let computerTurn =  this.minimax(table,this.computer);
-    //this.table[computerTurn.indexI][computerTurn.indexJ][computerTurn.indexJ] = this.computer
+    let computerTurn =  this.minimax(this.table,this.computer);
+    this.table[computerTurn.indexI][computerTurn.indexJ][computerTurn.indexJ] = this.computer
   }
 
   emptySpace(table:any){

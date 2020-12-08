@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TicTacToeService } from './serviecs/tic-tac-toe.service';
 
 @Component({
   selector: 'app-root',
@@ -12,12 +13,17 @@ export class AppComponent implements OnInit {
   header:any = [];
   x= true;
   o = false;
-  sizenumber = 4;
+  sizenumber = 3;
+  
   human = true;
   computer = false;
 
-  ngOnInit() {
-    this.renderTable(this.sizenumber)
+  constructor(
+    private services : TicTacToeService
+  ) { }
+
+  async ngOnInit() {
+    this.renderTable(this.sizenumber);
   }
 
   renderTable(number:number){
@@ -38,6 +44,7 @@ export class AppComponent implements OnInit {
       //for(let j =0; j<this.sizenumber;j++){
         move.indexI = emptySpace[i].indexI;
         move.indexJ = emptySpace[i].indexJ;
+        let origin = table[move.indexI][move.indexJ][move.indexJ]
         table[move.indexI][move.indexJ][move.indexJ] = side;
 
         if(side === this.human){
@@ -49,7 +56,7 @@ export class AppComponent implements OnInit {
           move.score = result.score;
         }
 
-        table[move.indexI][move.indexJ][move.indexJ] = 0;
+        table[move.indexI][move.indexJ][move.indexJ] = origin;
         moves.push(move);
     }
     let bestMove:any
@@ -57,7 +64,7 @@ export class AppComponent implements OnInit {
       let bestScore = -Infinity;
       for(let i=0;i<moves.length;i++){
           if(moves[i].score > bestScore){
-            bestScore = moves[i].score;
+            bestScore = Math.max(moves[i].score,bestScore);
             bestMove = i;
            
       }
@@ -66,11 +73,12 @@ export class AppComponent implements OnInit {
     else{    
       let bestScore = +Infinity;
       for(let i=0;i<moves.length;i++){
-            bestScore = moves[i].score;
-            bestMove = i;
+        if(moves[i].score < bestScore){
+          bestScore = moves[i].score;
+          bestMove = i;
+        }
       }
     }
-    console.log(moves[bestMove])
     return moves[bestMove];
   }
 
@@ -92,14 +100,36 @@ export class AppComponent implements OnInit {
     return obj[key];
   }
 
-   turn(row:number,col:number){
+   async turn(row:number,col:number){
     this.table[row][+col][+col]=this.human;
-    this.minimax(this.table,this.computer);
-    //console.log(this.winpattern(this.table,this.computer))
-    //let table = this.table
-    let computerTurn =  this.minimax(this.table,this.computer);
-    this.table[computerTurn.indexI][computerTurn.indexJ][computerTurn.indexJ] = this.computer
+    if(this.winpattern(this.table,this.human)) {
+      alert('WIN');
+    }
+    else if(this.winpattern(this.table,this.computer)){
+      alert('LOOSE');
+    }
+    else{
+      let board = this.limitsize(row,col)
+      let computerTurn =  await this.minimax(board,this.computer);
+      if(this.emptySpace(this.table).length !== 0){
+        this.table[computerTurn.indexI][computerTurn.indexJ][computerTurn.indexJ] = this.computer;
+      }
+      else{
+        alert('DRAW');
+      }
+    }
   }
+
+  limitsize(row:number,col:number){
+    let data = this.emptySpace(this.table)
+    if(data.length > 9){
+       //=  this.table
+    }
+    else{
+      return this.table;
+    }
+  }
+
 
   emptySpace(table:any){
     let emptyArray:any= [];

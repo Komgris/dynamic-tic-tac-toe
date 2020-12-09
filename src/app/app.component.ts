@@ -31,6 +31,7 @@ export class AppComponent implements OnInit {
     this.selectMode();
   }
   selectMode(){
+    this.reset();
     const modal: NgbModalRef = this.modalService.open(SelectModeComponent, this.ngbModalOptions);
     modal.result.then(
       (result) => {
@@ -46,8 +47,7 @@ export class AppComponent implements OnInit {
 
   reset(){
     this.renderTable(this.sizenumber);
-    this.side = false;
-    this.selectMode();
+    this.side = true;
   }
   minimax(table: any[], side: boolean) {
     let emptySpace = this.emptySpace(table);
@@ -113,13 +113,9 @@ export class AppComponent implements OnInit {
     return col;
   }
 
-  definValue(obj: any, key: string) {
-    return obj[key];
-  }
-
   async turn(row: number, col: number) {
     if (this.isTwoplayer) {
-      if (this.table[row][+col][+col] === 0) {
+      if (this.table[row][+col][+col] === 0) {//isempty
         this.table[row][+col][+col] = this.side;   // O start first
         if (this.winpattern(this.table, this.side)) {
           if (this.side) {// O player
@@ -130,13 +126,13 @@ export class AppComponent implements OnInit {
             this.reset();
           }
         }
-        if (this.emptySpace(this.table).length === 0) {
+        else if (this.emptySpace(this.table).length === 0) {
           alert('DRAW');
           this.reset();
         }
-
-        this.side = !this.side
-
+        else{
+          this.side = !this.side
+        }
       }
     }
     else {
@@ -235,8 +231,10 @@ export class AppComponent implements OnInit {
     for (let x = 0; x < this.sizenumber; x++) {
       isWinArray.push(table[x][x][x]);
     }
+    console.log((isWinArray.filter((res: boolean) => res !== side)).length === 0)
     if ((isWinArray.filter((res: boolean) => res !== side)).length === 0) {
       isWin = true;
+      
     }
     isWinArray = [];
 

@@ -7,18 +7,19 @@
           <label class="mr-2"><h4>Please Define Size of tic toc toe</h4></label>
           <input class="form-control mr-2" type="number" [(ngModel)]="sizenumber" name="sizenumber" [readonly]="!isTwoplayer">
           <button class="btn btn-primary btn-lg" (click)="renderTable(sizenumber)">OK</button>
+          <button class="btn btn-secondary btn-lg ml-2" (click)="selectMode()">Change Mode</button>
         </div>
       </form>
       <div *ngIf="isTwoplayer && side" class="d-flex flex-row  alert alert-primary" role="alert"><h4>Player 1 Turn </h4><span class="material-icons md-48">close</span></div>
       <div *ngIf="isTwoplayer && !side" class="d-flex flex-row  alert alert-success" role="alert"><h4>Player 2 Turn </h4><span  class="material-icons md-48">trip_origin</span></div>
     </div>
     <div class="col-12 mt-2">
-      <table style=" width: 100%; height: 80vh; border: none;">
+      <table>
         <tbody>
           <tr *ngFor="let row of table let i = index"> 
-              <td style="border: 5px solid black; width: 10px; height: 10px; object-fit: contain;" (click)="turn(i,col)" *ngFor="let col of header">
-                <img *ngIf="row[col][col] === true" style="  width: 100%;display: block;" src="../assets/img/cross.png" />
-                <img *ngIf="row[col][col] === false" style="  width: 100%;display: block;" class="img-fluid" alt="Responsive image"  width="100%" height="100%" src="../assets/img/circle.png" />
+              <td  class="img-container" (click)="turn(i,col)" *ngFor="let col of header">
+                <img class="tic-img" *ngIf="row[col][col] === true"  src="../assets/img/cross.png" />
+                <img class="tic-img" *ngIf="row[col][col] === false"   src="../assets/img/circle.png" />
               </td>  
           </tr>
       </tbody>

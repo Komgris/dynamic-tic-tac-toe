@@ -5,25 +5,20 @@
         <form class="form-inline">
         <div class="form-group">
           <label class="mr-2"><h4>Please Define Size of tic toc toe</h4></label>
-          <input class="form-control mr-2" type="number" [(ngModel)]="sizenumber" name="sizenumber">
+          <input class="form-control mr-2" type="number" [(ngModel)]="sizenumber" name="sizenumber" [readonly]="!isTwoplayer">
           <button class="btn btn-primary btn-lg" (click)="renderTable(sizenumber)">OK</button>
         </div>
       </form>
-        <div>
-          <button class="btn btn-primary btn-lg"(click)="renderTable(sizenumber)">CPU</button>
-          <button class="btn btn-primary btn-lg ml-2"(click)="renderTable(sizenumber)">TWO PLAYER</button>
-    
-        </div>
-    
+      <div *ngIf="isTwoplayer && side" class="d-flex flex-row  alert alert-primary" role="alert"><h4>Player 1 Turn </h4><span class="material-icons md-48">close</span></div>
+      <div *ngIf="isTwoplayer && !side" class="d-flex flex-row  alert alert-success" role="alert"><h4>Player 2 Turn </h4><span  class="material-icons md-48">trip_origin</span></div>
     </div>
     <div class="col-12 mt-2">
-      <table style="border-collapse: collapse; width: 100%; height: 80vh; border: none;">
+      <table style=" width: 100%; height: 80vh; border: none;">
         <tbody>
           <tr *ngFor="let row of table let i = index"> 
-              <td style="padding: 0px 0px 0px 0px; border: 1px solid black; width: 50px; height: 50px; text-align: center; 
-              vertical-align: middle;" (click)="turn(i,col)" *ngFor="let col of header">
-                <span *ngIf="row[col][col] === true" class="material-icons md-48">close</span>
-                <span *ngIf="row[col][col] === false" class="material-icons md-48">trip_origin</span>
+              <td style="border: 5px solid black; width: 10px; height: 10px; object-fit: contain;" (click)="turn(i,col)" *ngFor="let col of header">
+                <img *ngIf="row[col][col] === true" style="  width: 100%;display: block;" src="../assets/img/cross.png" />
+                <img *ngIf="row[col][col] === false" style="  width: 100%;display: block;" class="img-fluid" alt="Responsive image"  width="100%" height="100%" src="../assets/img/circle.png" />
               </td>  
           </tr>
       </tbody>

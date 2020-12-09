@@ -5,10 +5,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
+import { SelectModeComponent } from './components/select-mode/select-mode.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    SelectModeComponent
   ],
   imports: [
     BrowserModule,
